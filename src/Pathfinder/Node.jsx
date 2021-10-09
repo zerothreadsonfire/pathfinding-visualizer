@@ -1,8 +1,6 @@
 import React from 'react';
-import './App.css';
-import Pathfinder from './Pathfinder/Pathfinder';
 
-class App extends React.Component {
+class Node extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -11,10 +9,10 @@ class App extends React.Component {
   render() {
     return(
       <>
-        <Pathfinder />
+
       </>
     )
   }
 }
 
-export default App;
+export default Node;
