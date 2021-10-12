@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Pathfinder from './Pathfinder/Pathfinder';
+import ConwayGameOfLife from './Conway Game of Life/ConwayGameOfLife';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,9 +10,10 @@ class App extends React.Component {
 
   render() {
     return(
-      <>
-        <Pathfinder />
-      </>
+      <div className="cmp-container">
+        {/* <Pathfinder /> */}
+        <ConwayGameOfLife />
+      </div>
     )
   }
 }

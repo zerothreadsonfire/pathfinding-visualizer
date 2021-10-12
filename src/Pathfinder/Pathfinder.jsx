@@ -1,4 +1,5 @@
 import React from 'react';
+import Node from './Node';
 
 class Pathfinder extends React.Component {
   constructor(props) {
@@ -11,8 +12,8 @@ class Pathfinder extends React.Component {
   componentDidMount() {
     const grid = [];
 
-    for(let i=0; i<50; ++i) {
-      const currentRow = new Array(50).fill(0);
+    for(let i=0; i<10; ++i) {
+      const currentRow = new Array(10).fill(0);
       grid.push(currentRow);
     }
 
@@ -23,13 +24,18 @@ class Pathfinder extends React.Component {
     const {grid} = this.state;
     
     return(
-      <div>
+      <div className="grid">
       {
-        grid.map(row => {
-          row.map(cell => {
-            <div className="cell"></div>
-          })
-        })
+       grid.map((row, x) => {
+         return <div key={x} className="grid__row">
+           {
+             row.map((cell, y) => {
+               return <Node key={y} 
+              />
+             })
+           }
+         </div>
+       })
       }
       </div>
     )

@@ -1,5 +1,24 @@
-.cell {
+.grid {
+  margin: auto;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+}
+
+.grid__row {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid__cell {
   width: 20px;
   height: 20px;
-  background-color: red;
+  border: 1px solid #2f2f2f;
+  margin: 1px;
+}
+
+.grid__cell--active {
+  background-color: pink;
 }

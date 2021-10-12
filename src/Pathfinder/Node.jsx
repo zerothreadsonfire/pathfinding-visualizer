@@ -8,9 +8,8 @@ class Node extends React.Component {
 
   render() {
     return(
-      <>
-
-      </>
+      <div className="grid__cell">
+      </div>
     )
   }
 }
