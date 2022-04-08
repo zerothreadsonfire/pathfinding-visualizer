@@ -4,36 +4,42 @@ const numRows = 10;
 const numCols = 10;
 const operations = [[0,1], [0,-1], [1,-1], [-1,1], [1,1], [-1,-1], [1,0], [-1,0]];
 
-const ConwayGameOfLife = () => {
-
+const GameOfLife = () => {
   const [grid, setGrid] = React.useState(() => {
     const rows = [];
-    for (let i = 0; i < numRows; ++i) {
+
+    for (let i = 0; i < numRows; ++i) 
       rows.push(new Array(numCols).fill(0));
-    }
 
     return rows;
   });
   const [running, setRunning] = React.useState(false);
 
-  const runningRef = React.useRef(running);
-  runningRef.current = running;
+  // const runningRef = React.useRef(running);
+  // runningRef.current = running;
 
   const mutateGrid = (grid) => {
-    const newGrid = [];
+    const newGrid = new Array();
+    
     grid.map(row => {
-      newGrid.push(row);
+      const newRow = new Array();
+      row.map((x, i) => newRow[i]=x);
+      newGrid.push(newRow);
     })
-
+    
     return newGrid;
   }
 
   const runSimulation = React.useCallback(() => {
-    if(!runningRef.current) return;
+    // if(!runningRef.current) return;
+    const newGrid = mutateGrid(grid);
+    console.log(newGrid);
 
-    for(let i=0; i<numRows; ++i) {
-      for(let j=0; j<numCols; ++j) {
+    for(let i=0; i<numRows; i++) {
+      let j=0;
+      for(j=0; j<numCols; j++) {
         let neighbours = 0;
+
         operations.forEach(operation => {
           const newX = i + operation[0];
           const newY = j + operation[1];
@@ -44,46 +50,49 @@ const ConwayGameOfLife = () => {
         });
 
         if(neighbours < 2 || neighbours > 3) {
-          const newGrid = mutateGrid(grid);
           newGrid[i][j] = 0;
-          setGrid(newGrid);
-        } else if (grid[i][j] === 0 && neighbours === 3){
-          const newGrid = mutateGrid(grid);
+        } else if (grid[i][j] === 0 && neighbours === 3) {
           newGrid[i][j] = 1;
-          setGrid(newGrid);
         }
       }
+      console.log("i="+i+"j="+j);
     }
+  
+    setGrid(newGrid);
 
-    setTimeout(runSimulation, 1000);
+    // setTimeout(runSimulation, 100);
   }, []);
+
+  const toggleButton = () => {
+    runSimulation();
+  }
 
   return (
     <>
-      <button onClick={() => {
-        setRunning(!running);
-        if(running === false) {
-          runningRef.current = true;
-          runSimulation();
-        }
-      }}>{running ? 'Stop' : 'Start'}</button>
+      <button onClick={toggleButton}>
+        Click
+      </button>
+
       <div className="grid-container">
-        {grid.map((row, x) => {
-          return row.map((cell, y) => {
+        {grid.map((row, rIdx) => {
+          return row.map((cell, cIdx) => {
             return <div
-              key={`${x}-${y}`}
-              className={"grid__cell " + (grid[x][y] ? "grid__cell--active" : "")}
+              key={`${rIdx}-${cIdx}`}
+              className={"grid__cell " + (grid[rIdx][cIdx] ? "grid__cell--active" : "")}
               onClick={() => {
+                grid[rIdx][cIdx] = grid[rIdx][cIdx] === 0 ? 1 : 0;
                 const newGrid = mutateGrid(grid);
-                newGrid[x][y] = newGrid[x][y] === 0 ? 1 : 0;
                 setGrid(newGrid);
               }}>
             </div>
           })
         })}
       </div>
+
     </>
   )
+
+  
 }
 
-export default ConwayGameOfLife;
+export default GameOfLife;
