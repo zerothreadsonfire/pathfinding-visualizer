@@ -34,41 +34,40 @@ const GameOfLife = () => {
   // const runningRef = React.useRef(running);
   // runningRef.current = running;
 
-  const runSimulation = React.useCallback(() => {
+  const runSimulation = () => {
     // if(!runningRef.current) return;
-
+    console.log("outer");
+    console.log(grid);
     // console.log(newGrid);
+    const newGrid = mutateGrid(grid);
 
-    setGrid(grid => {
-      const newGrid = mutateGrid(grid);
-      for (let i = 0; i < numRows; i++) {
-        let j = 0;
-        for (j = 0; j < numCols; j++) {
-          let neighbours = 0;
-  
-          operations.forEach(operation => {
-            const newX = i + operation[0];
-            const newY = j + operation[1];
-  
-            if (newX >= 0 && newX < numRows && newY >= 0 && newY < numCols) {
-              neighbours += grid[newX][newY];
-            }
-          });
-  
-          if (neighbours < 2 || neighbours > 3) {
-            newGrid[i][j] = 0;
-          } else if (grid[i][j] === 0 && neighbours === 3) {
-            newGrid[i][j] = 1;
+    for (let i = 0; i < numRows; i++) {
+      let j = 0;
+      for (j = 0; j < numCols; j++) {
+        let neighbours = 0;
+
+        operations.forEach(operation => {
+          const newX = i + operation[0];
+          const newY = j + operation[1];
+
+          if (newX >= 0 && newX < numRows && newY >= 0 && newY < numCols) {
+            neighbours += grid[newX][newY];
           }
+        });
+
+        if (neighbours < 2 || neighbours > 3) {
+          newGrid[i][j] = 0;
+        } else if (grid[i][j] === 0 && neighbours === 3) {
+          newGrid[i][j] = 1;
         }
       }
-      
-      return newGrid;
-    })
+    }
+
+    setGrid(newGrid);
     
     // setGrid(newGrid);
     setTimeout(runSimulation, 1000);
-  }, []);
+  };
 
   return (
     <>
@@ -83,14 +82,11 @@ const GameOfLife = () => {
           return row.map((cell, cIdx) => {
             return <div
               key={`${rIdx}-${cIdx}`}
-              className={"grid__cell "}
+              className={"grid__cell " + (grid[rIdx][cIdx] ? "grid__cell--active" : "")}
               onClick={() => {
                 grid[rIdx][cIdx] = grid[rIdx][cIdx] ? 0 : 1;
                 const newGrid = mutateGrid(grid);
                 setGrid(newGrid);
-              }}
-              style={{
-                backgroundColor: grid[rIdx][cIdx] ? "green" : undefined,
               }}>
             </div>
           })
