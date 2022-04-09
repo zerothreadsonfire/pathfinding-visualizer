@@ -36,8 +36,6 @@ const GameOfLife = () => {
 
   const runSimulation = () => {
     // if(!runningRef.current) return;
-    console.log("outer");
-    console.log(grid);
     // console.log(newGrid);
     const newGrid = mutateGrid(grid);
 
