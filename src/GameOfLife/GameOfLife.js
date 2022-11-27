@@ -1,79 +1,78 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const numRows = 10;
 const numCols = 10;
 const operations = [[0, 1], [0, -1], [1, -1], [-1, 1], [1, 1], [-1, -1], [1, 0], [-1, 0]];
 
-const genEmptyGrid = () => {
-  const rows = [];
-
-  for (let i = 0; i < numRows; ++i)
-    rows.push(new Array(numCols).fill(0));
-
-  return rows;
-}
-
-const mutateGrid = (grid) => {
-  const newGrid = new Array();
-
-  grid.map(row => {
-    const newRow = [...row];
-    newGrid.push(newRow);
-  })
-
-  return newGrid;
-}
-
-
 const GameOfLife = () => {
   const [grid, setGrid] = React.useState(() => {
-    return genEmptyGrid();
-  });
-  // const [running, setRunning] = React.useState(false);
+    const rows = [];
 
-  // const runningRef = React.useRef(running);
-  // runningRef.current = running;
+    for (let i = 0; i < numRows; ++i)
+      rows.push(new Array(numCols).fill(0));
+
+    return rows;
+  });
+
+  const [running, setRunning] = React.useState(false);
+  const intervalRef = React.useRef();
+
+  useEffect(() => {
+    if(running === true) intervalRef.current = setInterval(() => {
+      runSimulation()
+    }, 200);
+    else {
+      clearInterval(intervalRef.current);
+    }
+    
+  }, [running]);
 
   const runSimulation = () => {
-    // if(!runningRef.current) return;
-    // console.log(newGrid);
-    const newGrid = mutateGrid(grid);
+    setGrid((grid) => {
+      const newGrid = mutateGrid(grid);
 
-    for (let i = 0; i < numRows; i++) {
-      let j = 0;
-      for (j = 0; j < numCols; j++) {
-        let neighbours = 0;
+      for (let i = 0; i < numRows; i++) {
+        let j = 0;
+        for (j = 0; j < numCols; j++) {
+          let neighbours = 0;
 
-        operations.forEach(operation => {
-          const newX = i + operation[0];
-          const newY = j + operation[1];
+          operations.forEach(operation => {
+            const newX = i + operation[0];
+            const newY = j + operation[1];
 
-          if (newX >= 0 && newX < numRows && newY >= 0 && newY < numCols) {
-            neighbours += grid[newX][newY];
+            if (newX >= 0 && newX < numRows && newY >= 0 && newY < numCols) {
+              neighbours += grid[newX][newY];
+            }
+          });
+
+          if (neighbours < 2 || neighbours > 3) {
+            newGrid[i][j] = 0;
+          } else if (grid[i][j] === 0 && neighbours === 3) {
+            newGrid[i][j] = 1;
           }
-        });
-
-        if (neighbours < 2 || neighbours > 3) {
-          newGrid[i][j] = 0;
-        } else if (grid[i][j] === 0 && neighbours === 3) {
-          newGrid[i][j] = 1;
         }
       }
-    }
 
-    setGrid(newGrid);
-    
-    // setGrid(newGrid);
-    setTimeout(runSimulation, 1000);
+      return newGrid;
+    });
   };
+
+  const mutateGrid = (grid) => {
+    const newGrid = [];
+  
+    grid.map(row => {
+      const newRow = [...row];
+      newGrid.push(newRow);
+    })
+  
+    return newGrid;
+  }
 
   return (
     <>
       <button onClick={() => {
-        runSimulation();
-      }}>
-        Click
-      </button>
+        setRunning(!running);
+      }}>{running ? "stop" : "start"}</button>
 
       <div className="grid-container">
         {grid.map((row, rIdx) => {
